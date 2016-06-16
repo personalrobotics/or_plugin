@@ -32,14 +32,13 @@ private:
                                  std::ostream& sout, std::istream& sin)
   {
     // Parse input as a YAML document.
-    const YAML::Node input = YAML::Load("[\"test\"]");
+    const YAML::Node input = YAML::Load(sin);
 
     // Send decoded YAML to wrapper command function.
     YAML::Node output;
     bool success = command(output, input);
 
     // Print output to stream and return status.
-    std::cout << "TEST " << output << std::endl;
     sout << output << std::endl;
     return success;
   }
