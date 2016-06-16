@@ -25,6 +25,7 @@ struct convert<OpenRAVE::KinBodyPtr>
     Node node;
     node.push_back(kinbody->GetEnvironmentId());
     node.push_back(kinbody->GetName());
+    node.SetTag("!OpenRAVE::KinBody");
     return node;
   }
 
@@ -74,6 +75,7 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
     node.push_back(kinbody->GetEnvironmentId());
     node.push_back(kinbody->GetName());
     node.push_back(link->GetName());
+    node.SetTag("!OpenRAVE::KinBody::Link");
     return node;
   }
 
@@ -127,24 +129,49 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
 template<>
 struct convert<OpenRAVE::Transform>
 {
-  static Node encode(const OpenRAVE::Transform kinbody)
+  static Node encode(const OpenRAVE::Transform &transform)
   {
+    OpenRAVE::TransformMatrix matrix(transform);
+
+    // Convert a 4x4 matrix into a list of lists.
     Node node;
-    // TODO: implement this.
+    for (unsigned row = 0; row < 4; ++row)
+    {
+      for (unsigned col = 0; col < 4; ++col)
+      {
+        node[row][col] = matrix.m[4*row + col];
+      }
+    }
+
+    node.SetTag("!OpenRAVE::Transform");
     return node;
   }
 
-  static bool decode(const Node& node, OpenRAVE::Transform &kinbody)
+  static bool decode(const Node& node, OpenRAVE::Transform &transform)
   {
     if(!node.IsSequence() || node.size() != 4)
     {
-      RAVELOG_ERROR("Transform must have format [[4x4]].\n");
+      RAVELOG_ERROR("Transform must have 4 rows.\n");
       return false;
     }
 
-    // TODO: implement this.
+    // Convert a list of lists into a 4x4 matrix.
+    OpenRAVE::TransformMatrix matrix;
+    for (unsigned row = 0; row < 4; ++row)
+    {
+      YAML::Node row_node = node[row];
+      if(!row_node.IsSequence() || row_node.size() != 4)
+      {
+        RAVELOG_ERROR("Transform must have 4 columns.\n");
+        return false;
+      }
 
-    return false;
+      for (unsigned col = 0; col < 4; ++col)
+        matrix.m[4*row + col] = row_node[col].as<OpenRAVE::dReal>();
+    }
+
+    transform = matrix;
+    return true;
   }
 };
 
