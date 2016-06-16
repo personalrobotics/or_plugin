@@ -1,3 +1,4 @@
+from . import encoding
 import openravepy
 import yaml
 
@@ -34,15 +35,15 @@ class Module(object):
                     "`or_plugin` commands can either take ordered arguments "
                     "or keyword arguments, but not both.")
             elif args:
-                input_str = yaml.dump(args)
+                input_str = yaml.dump(args, Dumper=encoding.OpenRAVEDumper)
             elif kwargs:
-                input_str = yaml.dump(kwargs)
+                input_str = yaml.dump(kwargs, Dumper=encoding.OpenRAVEDumper)
             else:
                 input_str = '{}'
 
             output_str = self._module.SendCommand(command + " " + input_str)
             if output_str:
-                return yaml.load(output_str)
+                return yaml.load(output_str, Loader=encoding.OpenRAVELoader)
             else:
                 raise CommandError("`{:s}` failed to complete."
                                    .format(command))
