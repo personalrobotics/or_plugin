@@ -1,6 +1,9 @@
-from .encoding import OpenRAVEEncoder
 import openravepy
-import json
+import yaml
+
+
+class CommandError(Exception):
+    pass
 
 
 class Module(object):
@@ -9,7 +12,6 @@ class Module(object):
     """
     def __init__(self, env, module_name):
         self._env = env
-        self._encoder = OpenRAVEEncoder()
         self._module = openravepy.RaveCreateModule(env, module_name)
         if self._module is None:
             raise ImportError(
@@ -32,13 +34,17 @@ class Module(object):
                     "`or_plugin` commands can either take ordered arguments "
                     "or keyword arguments, but not both.")
             elif args:
-                input_str = self._encoder.encode(args)
+                input_str = yaml.dump(args)
             elif kwargs:
-                input_str = self._encoder.encode(kwargs)
+                input_str = yaml.dump(kwargs)
             else:
                 input_str = '{}'
 
             output_str = self._module.SendCommand(command + " " + input_str)
-            return json.loads(output_str)
+            if output_str:
+                return yaml.load(output_str)
+            else:
+                raise CommandError("`{:s}` failed to complete."
+                                   .format(command))
 
         return command_wrapper
