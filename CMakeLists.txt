@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(or_plugin)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+add_definitions("-std=c++11")
 
 # Detect and include the YAML-CPP library.
 set(YAMLCPP_STATIC_LIBRARY OFF CACHE BOOL
@@ -22,17 +23,14 @@ catkin_package(
     INCLUDE_DIRS include
     LIBRARIES "${PROJECT_NAME}"
     DEPENDS yaml-cpp
+    CFG_EXTRAS or_plugin_extras.cmake
 )
+catkin_python_setup()
 include_directories(
     ${catkin_INCLUDE_DIRS}
     "include/"
 )
 
-add_library("${PROJECT_NAME}" SHARED
-    src/module.cpp
-)
-target_link_libraries("${PROJECT_NAME}"
-    ${catkin_LIBRARIES}
-    ${YAMLCPP_LIBRARIES}
-    ${OpenRAVE_LIBRARIES}
-)
+if (CATKIN_ENABLE_TESTING)
+    catkin_add_nosetests(tests)
+endif()

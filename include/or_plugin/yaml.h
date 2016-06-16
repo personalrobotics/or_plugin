@@ -44,7 +44,7 @@ struct convert<OpenRAVE::KinBodyPtr>
       return false;
     }
 
-    const std::string kinbody_name = node[1].as<std::string>();
+    const auto kinbody_name = node[1].as<std::string>();
     kinbody = env->GetKinBody(kinbody_name);
     if (!kinbody)
     {
@@ -68,7 +68,7 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
 {
   static Node encode(const OpenRAVE::KinBody::LinkPtr link)
   {
-    const OpenRAVE::KinBodyPtr kinbody = link->GetParent();
+    const auto kinbody = link->GetParent();
 
     Node node;
     node.push_back(kinbody->GetEnvironmentId());
@@ -93,8 +93,8 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
       return false;
     }
 
-    const std::string kinbody_name = node[1].as<std::string>();
-    OpenRAVE::KinBodyPtr kinbody = env->GetKinBody(kinbody_name);
+    const auto kinbody_name = node[1].as<std::string>();
+    auto kinbody = env->GetKinBody(kinbody_name);
     if (!kinbody)
     {
       RAVELOG_ERROR("No kinbody '%s' in environment '%d'.\n",
@@ -102,7 +102,7 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
       return false;
     }
 
-    const std::string link_name = node[2].as<std::string>();
+    const auto link_name = node[2].as<std::string>();
     link = kinbody->GetLink(link_name);
     if (!link)
     {

@@ -1,4 +1,4 @@
-from ..json import OpenRAVEEncoder
+from .encoding import OpenRAVEEncoder
 import openravepy
 import json
 
@@ -35,6 +35,10 @@ class Module(object):
                 input_str = self._encoder.encode(args)
             elif kwargs:
                 input_str = self._encoder.encode(kwargs)
+            else:
+                input_str = '{}'
 
             output_str = self._module.SendCommand(command + " " + input_str)
             return json.loads(output_str)
+
+        return command_wrapper
