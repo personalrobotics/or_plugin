@@ -39,7 +39,8 @@ private:
     bool success = command(output, input);
 
     // Print output to stream and return status.
-    sout << output << std::endl;
+    if (output.IsDefined())
+      sout << output << std::endl;
     return success;
   }
 
@@ -65,7 +66,7 @@ protected:
                            const std::string &strhelp)
   {
     this->RegisterCommand(
-        cmdname, boost::bind(YAMLCommandWrapper, command, _1, _2), strhelp);
+      cmdname, boost::bind(YAMLCommandWrapper, command, _1, _2), strhelp);
   }
 
   ///
