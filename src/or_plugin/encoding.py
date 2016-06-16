@@ -1,3 +1,4 @@
+import openravepy
 import openravepy.openravepy_int as OpenRAVE
 import numpy
 import yaml
@@ -37,39 +38,60 @@ class OpenRAVELoader(Loader):
 
 
 def matrix_representer(dumper, data):
-    pass
+    return dumper.represent_sequence("!numpy.ndarray", data.tolist())
 
 
 def matrix_constructor(loader, node):
-    pass
+    matrix_node = loader.construct_sequence(node)
+    return numpy.array(matrix_node)
 
 
-yaml.add_representer(numpy.ndarray, matrix_representer,
-                     Dumper=OpenRAVEDumper)
+# Note that this mapping is ASYMMETRIC w.r.t. node tags.
+yaml.add_multi_representer(numpy.ndarray, matrix_representer,
+                           Dumper=OpenRAVEDumper)
 yaml.add_constructor("!numpy.ndarray", matrix_constructor,
+                     Loader=OpenRAVELoader)
+yaml.add_constructor("!OpenRAVE::Transform", matrix_constructor,
                      Loader=OpenRAVELoader)
 
 
-def kinbody_representer(dumper, data):
-    pass
+def kinbody_representer(dumper, kinbody):
+    return dumper.represent_sequence("!OpenRAVE::KinBody", [
+        kinbody.GetEnvironmentId(),
+        kinbody.GetName()
+    ])
 
 
 def kinbody_constructor(loader, node):
-    pass
+    data = loader.construct_sequence(node)
+    environment = openravepy.RaveGetEnvironment(data[0])
+    kinbody = environment.GetKinBody(data[1])
+    return kinbody
 
 
-yaml.add_multi_representer(OpenRAVE.KinBody,
-                           kinbody_representer)
-yaml.add_constructor("!OpenRAVE::KinBody", kinbody_constructor)
+yaml.add_multi_representer(OpenRAVE.KinBody, kinbody_representer,
+                           Dumper=OpenRAVEDumper)
+yaml.add_constructor("!OpenRAVE::KinBody", kinbody_constructor,
+                     Loader=OpenRAVELoader)
 
 
-def link_representer(dumper, data):
-    return dumper.represent_scalar(u'!dice', u'%sd%s' % data)
+def link_representer(dumper, link):
+    return dumper.represent_sequence("!OpenRAVE::KinBody::Link", [
+        link.GetParent().GetEnvironmentId(),
+        link.GetParent().GetName(),
+        link.GetName()
+    ])
 
 
 def link_constructor(loader, node):
-    pass
+    data = loader.construct_sequence(node)
+    environment = openravepy.RaveGetEnvironment(data[0])
+    kinbody = environment.GetKinBody(data[1])
+    link = kinbody.GetLink(data[2])
+    return link
 
-yaml.add_representer(OpenRAVE.KinBody.Link,
-                     link_representer)
-yaml.add_constructor("!OpenRAVE::KinBody::Link", link_representer)
+
+yaml.add_multi_representer(OpenRAVE.KinBody.Link, link_representer,
+                           Dumper=OpenRAVEDumper)
+yaml.add_constructor("!OpenRAVE::KinBody::Link", link_constructor,
+                     Loader=OpenRAVELoader)
