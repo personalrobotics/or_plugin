@@ -22,7 +22,7 @@ class Module(object):
     def __getattr__(self, command):
         # Check if the module supports this operation.
         if not self._module.SupportsCommand(command):
-            raise ValueError(
+            raise AttributeError(
                 "Command '{:s}' is not supported by '{:s}'."
                 .format(command, self._module.GetPluginName()))
 
