@@ -23,7 +23,7 @@ struct convert<OpenRAVE::KinBodyPtr>
   static Node encode(const OpenRAVE::KinBodyPtr kinbody)
   {
     Node node;
-    node.push_back(kinbody->GetEnvironmentId());
+    node.push_back(OpenRAVE::RaveGetEnvironmentId(kinbody->GetEnv()));
     node.push_back(kinbody->GetName());
     node.SetTag("!OpenRAVE::KinBody");
     return node;
@@ -33,7 +33,7 @@ struct convert<OpenRAVE::KinBodyPtr>
   {
     if(!node.IsSequence() || node.size() != 2)
     {
-      RAVELOG_WARN("Kinbody must have format [env, kinbody].");
+      RAVELOG_WARN("Kinbody must have format [env, kinbody].\n");
       return false;
     }
 
@@ -70,9 +70,10 @@ struct convert<OpenRAVE::KinBody::LinkPtr>
   static Node encode(const OpenRAVE::KinBody::LinkPtr link)
   {
     const auto kinbody = link->GetParent();
+    const auto env = kinbody->GetEnv();
 
     Node node;
-    node.push_back(kinbody->GetEnvironmentId());
+    node.push_back(OpenRAVE::RaveGetEnvironmentId(env));
     node.push_back(kinbody->GetName());
     node.push_back(link->GetName());
     node.SetTag("!OpenRAVE::KinBody::Link");

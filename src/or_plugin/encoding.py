@@ -57,7 +57,7 @@ yaml.add_constructor("!OpenRAVE::Transform", matrix_constructor,
 
 def kinbody_representer(dumper, kinbody):
     return dumper.represent_sequence("!OpenRAVE::KinBody", [
-        kinbody.GetEnvironmentId(),
+        openravepy.RaveGetEnvironmentId(kinbody.GetEnv()),
         kinbody.GetName()
     ])
 
@@ -77,7 +77,7 @@ yaml.add_constructor("!OpenRAVE::KinBody", kinbody_constructor,
 
 def link_representer(dumper, link):
     return dumper.represent_sequence("!OpenRAVE::KinBody::Link", [
-        link.GetParent().GetEnvironmentId(),
+        openravepy.RaveGetEnvironmentId(link.GetParent().GetEnv()),
         link.GetParent().GetName(),
         link.GetName()
     ])
