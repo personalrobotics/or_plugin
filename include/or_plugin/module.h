@@ -39,8 +39,11 @@ private:
     bool success = command(output, input);
 
     // Print output to stream and return status.
-    if (output.IsDefined())
+    if (output.IsNull())
+      sout << "~" << std::endl;
+    else
       sout << output << std::endl;
+
     return success;
   }
 
