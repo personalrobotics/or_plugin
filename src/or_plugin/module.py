@@ -41,7 +41,7 @@ class Module(object):
             else:
                 input_str = '{}'
 
-            output_str = self._module.SendCommand(command + " " + input_str)
+            output_str = self._module.SendCommand(command + " \n" + input_str)
             if output_str:
                 return yaml.load(output_str, Loader=encoding.OpenRAVELoader)
             else:
