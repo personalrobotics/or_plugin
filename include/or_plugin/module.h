@@ -36,7 +36,16 @@ private:
 
     // Send decoded YAML to wrapper command function.
     YAML::Node output;
-    bool success = command(output, input);
+    bool success;
+    try
+    {
+      success = command(output, input);
+    }
+    catch (YAML::RepresentationException ex)
+    {
+      RAVELOG_ERROR("Unable to interpret arguments: %s.\n", ex.msg.c_str());
+      return false;
+    }
 
     // Print output to stream and return status.
     if (output.IsNull())
