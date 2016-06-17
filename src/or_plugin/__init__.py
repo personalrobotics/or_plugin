@@ -1,6 +1,6 @@
 """
 Helpers for implementing OpenRAVE plugins.
 """
-from .module import Module
+from .module import CommandError, Module
 
-__all__ = [Module]
+__all__ = [CommandError, Module]
