@@ -7,18 +7,20 @@ add_definitions("-std=c++11")
 set(YAMLCPP_STATIC_LIBRARY OFF CACHE BOOL
     "If true, try to find static yaml-cpp library first instead of dynamic.")
 find_package(YamlCpp REQUIRED)
-include_directories(${YAMLCPP_INCLUDE_DIRS})
+include_directories(SYSTEM ${YAMLCPP_INCLUDE_DIRS})
 add_definitions(${YAMLCPP_DEFINITIONS})
 
 # Detect and include the OpenRAVE library.
 find_package(OpenRAVE REQUIRED)
-include_directories(${OpenRAVE_INCLUDE_DIRS})
+include_directories(SYSTEM ${OpenRAVE_INCLUDE_DIRS})
 add_definitions(${OpenRAVE_DEFINITIONS})
 
 # Find and include Catkin dependencies.
 find_package(catkin REQUIRED COMPONENTS
     openrave_catkin
 )
+include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
+
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES "${PROJECT_NAME}"
@@ -26,10 +28,7 @@ catkin_package(
     CFG_EXTRAS or_plugin_extras.cmake
 )
 catkin_python_setup()
-include_directories(
-    ${catkin_INCLUDE_DIRS}
-    "include/"
-)
+include_directories("include/")
 
 if (CATKIN_ENABLE_TESTING)
     catkin_add_nosetests(tests)

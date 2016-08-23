@@ -87,6 +87,7 @@ protected:
   virtual int main(const YAML::Node &args)
   {
     // Do nothing here by default.
+    return 0;
   };
 };
 
