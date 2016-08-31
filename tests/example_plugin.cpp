@@ -76,7 +76,7 @@ public:
   /// Serialize and deserialize the input kinbodies.
   bool KinbodyCommand(YAML::Node &output, const YAML::Node &input)
   {
-    const OpenRAVE::KinBodyPtr kinbody = input[0].as<OpenRAVE::KinBody>();
+    const OpenRAVE::KinBodyPtr kinbody = input[0].as<OpenRAVE::KinBodyPtr>();
     output = kinbody;
     return true;
   }
@@ -84,7 +84,7 @@ public:
   /// Serialize and deserialize the input links.
   bool LinkCommand(YAML::Node &output, const YAML::Node &input)
   {
-    const OpenRAVE::KinBody::LinkPtr link = input[0].as<OpenRAVE::KinBody::Link>();
+    const OpenRAVE::KinBody::LinkPtr link = input[0].as<OpenRAVE::KinBody::LinkPtr>();
     output = link;
     return true;
   }
