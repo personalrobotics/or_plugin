@@ -23,7 +23,6 @@ include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
 
 catkin_package(
     INCLUDE_DIRS include
-    LIBRARIES "${PROJECT_NAME}"
     DEPENDS yaml-cpp
     CFG_EXTRAS or_plugin_extras.cmake
 )
