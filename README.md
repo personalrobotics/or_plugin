@@ -49,7 +49,7 @@ This works because `or_plugin` has defined implicit casts from `YAML::Node` to `
 
 Once a plugin is defined in C++, it can be accessed via a helper wrapper in Python.
 
-[https://github.com/personalrobotics/or_plugin/blob/master/tests/test_plugin.py] uses this to test the above example plugin.  The core of the example is as follows:
+[test_plugin.py](tests/test_plugin.py) uses this to test the above example plugin.  The core of the example is as follows:
 
 ```python
 import openravepy
